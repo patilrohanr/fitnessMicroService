@@ -28,7 +28,8 @@ public class GeminiService {
                         Map.of("parts",new Object[]{
                                 Map.of("text",details)
                         })
-                }
+                },
+                "generationConfig", Map.of("responseMimeType", "application/json")
         );
 
         String response=webClient.post().uri(geminiApiUrl).header("Content-Type","application/json")
