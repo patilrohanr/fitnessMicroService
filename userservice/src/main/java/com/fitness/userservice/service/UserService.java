@@ -23,7 +23,17 @@ public class UserService {
 
     public UserResponse register(RegisterRequest registerRequest) {
         if(repository.existsByEmail(registerRequest.getEmail())){
-                    throw new RuntimeException("Email already exist");
+            User existingUser=repository.findByEmail(registerRequest.getEmail());
+            UserResponse userResponse=new UserResponse();
+
+            userResponse.setId(existingUser.getId());
+            userResponse.setPassword(existingUser.getPassword());
+            userResponse.setEmail(existingUser.getEmail());
+            userResponse.setFirstName(existingUser.getFirstName());
+            userResponse.setLastName(existingUser.getLastName());
+            userResponse.setCreatedAt(existingUser.getCreatedAt());
+            userResponse.setUpdatedAt(existingUser.getUpdatedAt());
+            return userResponse;
         }
 
         User user = new User();
@@ -37,6 +47,7 @@ public class UserService {
 
         userResponse.setId(savedUser.getId());
         userResponse.setPassword(savedUser.getPassword());
+        userResponse.setKeycloakId(savedUser.getKeycloakId());
         userResponse.setEmail(savedUser.getEmail());
         userResponse.setFirstName(savedUser.getFirstName());
         userResponse.setLastName(savedUser.getLastName());
@@ -51,10 +62,11 @@ public class UserService {
 
         UserResponse userResponse=new UserResponse();
         userResponse.setId(user.getId());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setKeycloakId((user.getKeycloakId()));
+        userResponse.setLastName(user.getLastName());
         userResponse.setPassword(user.getPassword());
         userResponse.setEmail(user.getEmail());
-        userResponse.setFirstName(user.getFirstName());
-        userResponse.setLastName(user.getLastName());
         userResponse.setCreatedAt(user.getCreatedAt());
         userResponse.setUpdatedAt(user.getUpdatedAt());
         return userResponse;
@@ -63,7 +75,7 @@ public class UserService {
 
     public  Boolean existByUserId(String userId) {
         log.info("Calling User Service for {}",userId);
-        return repository.existsById(userId);
+        return repository.existsByKeycloakId(userId);
 
     }
 }
